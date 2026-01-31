@@ -1,10 +1,5 @@
 package controller;
 
-import model.Campeonato;
-import model.Carrera;
-import model.Coche;
-import model.ResultadoCarrera;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,37 +11,37 @@ public class CampeonatoController {
         this.carreraController = carreraController;
     }
 
-    public List<ResultadoCarrera> ejecutarCampeonato(Campeonato campeonato) {
-        List<ResultadoCarrera> resultados = new ArrayList<>();
+    public List<model.ResultadoCarrera> ejecutarCampeonato(model.Campeonato campeonato) {
+        List<model.ResultadoCarrera> resultados = new ArrayList<>();
 
-        for (Carrera carrera : campeonato.getCarreras()) {
-            ResultadoCarrera res = carreraController.simularCarrera(carrera);
+        for (model.Carrera carrera : campeonato.getCarreras()) {
+            model.ResultadoCarrera res = carreraController.simularCarrera(carrera);
             resultados.add(res);
         }
 
         return resultados;
     }
 
-    public List<Coche> obtenerClasificacionGeneral(List<Coche> participantes) {
-        List<Coche> ordenados = new ArrayList<>(participantes);
+    public List<model.Coche> obtenerClasificacionGeneral(List<model.Coche> participantes) {
+        List<model.Coche> ordenados = new ArrayList<>(participantes);
         ordenarClasificacionGeneral(ordenados);
         return ordenados;
     }
 
-    public Coche obtenerLider(List<Coche> participantes) {
-        List<Coche> clas = obtenerClasificacionGeneral(participantes);
+    public model.Coche obtenerLider(List<model.Coche> participantes) {
+        List<model.Coche> clas = obtenerClasificacionGeneral(participantes);
         return clas.get(0);
     }
 
-    public String tablaClasificacion(List<Coche> participantes) {
-        List<Coche> ordenados = obtenerClasificacionGeneral(participantes);
+    public String tablaClasificacion(List<model.Coche> participantes) {
+        List<model.Coche> ordenados = obtenerClasificacionGeneral(participantes);
 
         StringBuilder sb = new StringBuilder();
         sb.append("Pos\tPiloto\t\tCoche\t\tDorsal\tPuntos\n");
         sb.append("------------------------------------------------\n");
 
         for (int i = 0; i < ordenados.size(); i++) {
-            Coche c = ordenados.get(i);
+            model.Coche c = ordenados.get(i);
             sb.append((i + 1) + ")\t");
             sb.append(recortar(c.getPiloto(), 16));
             sb.append("\t");
@@ -62,13 +57,13 @@ public class CampeonatoController {
         return sb.toString();
     }
 
-    private void ordenarClasificacionGeneral(List<Coche> coches) {
+    private void ordenarClasificacionGeneral(List<model.Coche> coches) {
         int n = coches.size();
 
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
-                Coche a = coches.get(j);
-                Coche b = coches.get(j + 1);
+                model.Coche a = coches.get(j);
+                model.Coche b = coches.get(j + 1);
 
                 if (debeIntercambiarGeneral(a, b)) {
                     coches.set(j, b);
@@ -78,7 +73,7 @@ public class CampeonatoController {
         }
     }
 
-    private boolean debeIntercambiarGeneral(Coche a, Coche b) {
+    private boolean debeIntercambiarGeneral(model.Coche a, model.Coche b) {
         if (a.getPuntosTotales() < b.getPuntosTotales()) return true;
         if (a.getPuntosTotales() > b.getPuntosTotales()) return false;
 

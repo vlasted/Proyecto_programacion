@@ -1,10 +1,5 @@
 package controller;
 
-import model.Carrera;
-import model.Coche;
-import model.ResultadoCarrera;
-import model.ResultadoParticipante;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -21,8 +16,8 @@ public class CarreraController {
         this.random = random;
     }
 
-    public ResultadoCarrera simularCarrera(Carrera carrera) {
-        for (Coche coche : carrera.getParticipantes()) {
+    public model.ResultadoCarrera simularCarrera(model.Carrera carrera) {
+        for (model.Coche coche : carrera.getParticipantes()) {
             coche.resetearParaNuevaCarrera();
         }
 
@@ -30,13 +25,13 @@ public class CarreraController {
 
         boolean hayGanador = false;
         while (!hayGanador) {
-            for (Coche coche : carrera.getParticipantes()) {
+            for (model.Coche coche : carrera.getParticipantes()) {
                 int kmTramo = random.nextInt(31) + 20; // 20..50
                 coche.sumarKm(kmTramo);
                 coche.sumarTiempoPorTramo(kmTramo);
             }
 
-            for (Coche coche : carrera.getParticipantes()) {
+            for (model.Coche coche : carrera.getParticipantes()) {
                 if (coche.getKmRecorridos() >= objetivoKm) {
                     hayGanador = true;
                     break;
@@ -44,20 +39,20 @@ public class CarreraController {
             }
         }
 
-        List<Coche> ordenados = new ArrayList<>(carrera.getParticipantes());
+        List<model.Coche> ordenados = new ArrayList<>(carrera.getParticipantes());
         ordenarResultadosCarrera(ordenados);
 
-        List<ResultadoParticipante> resultados = new ArrayList<>();
+        List<model.ResultadoParticipante> resultados = new ArrayList<>();
         for (int i = 0; i < ordenados.size(); i++) {
             int posicion = i + 1;
             int puntos = puntosPorPosicion(posicion);
 
             ordenados.get(i).sumarPuntos(puntos);
 
-            resultados.add(new ResultadoParticipante(ordenados.get(i), posicion, puntos));
+            resultados.add(new model.ResultadoParticipante(ordenados.get(i), posicion, puntos));
         }
 
-        return new ResultadoCarrera(carrera, resultados);
+        return new model.ResultadoCarrera(carrera, resultados);
     }
 
     private int puntosPorPosicion(int posicion) {
@@ -67,13 +62,13 @@ public class CarreraController {
         return 0;
     }
 
-    private void ordenarResultadosCarrera(List<Coche> coches) {
+    private void ordenarResultadosCarrera(List<model.Coche> coches) {
         int n = coches.size();
 
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
-                Coche a = coches.get(j);
-                Coche b = coches.get(j + 1);
+                model.Coche a = coches.get(j);
+                model.Coche b = coches.get(j + 1);
 
                 if (debeIntercambiarCarrera(a, b)) {
                     coches.set(j, b);
@@ -83,7 +78,7 @@ public class CarreraController {
         }
     }
 
-    private boolean debeIntercambiarCarrera(Coche a, Coche b) {
+    private boolean debeIntercambiarCarrera(model.Coche a, model.Coche b) {
         if (a.getKmRecorridos() < b.getKmRecorridos()) return true;
         if (a.getKmRecorridos() > b.getKmRecorridos()) return false;
 
